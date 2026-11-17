@@ -12,6 +12,8 @@ inputs:
     url: github:cachix/devenv-nixpkgs/rolling
   nixpkgs-python:
     url: github:cachix/nixpkgs-python
+  nixpkgs-terraform:
+    url: github:stackbuilders/nixpkgs-terraform
 
 imports:
   - devenvbase
