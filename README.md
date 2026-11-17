@@ -14,11 +14,35 @@ module "hierarchy" {
   source  = "damsoncloud/cf-hierarchy/google"
   version = "X.Y.Z"
 
-  # Inputs are documented once the module's first version is released.
+  organization_id = "123456789012"
 }
 ```
 
 Pin an exact version. New versions are published as immutable GitHub releases with `vX.Y.Z` tags, following [semantic versioning](https://semver.org/).
+
+See [`examples/basic`](examples/basic) for a complete example.
+
+<!-- BEGIN_TF_DOCS -->
+<!-- markdownlint-capture -->
+<!-- markdownlint-disable MD013 -->
+## Inputs
+
+| Name | Description | Type | Default | Required |
+| ---- | ----------- | ---- | ------- | :------: |
+| create\_legacy\_folder | Whether to create the `legacy` folder, holding the organisation's existing projects and folders. | `bool` | `true` | no |
+| environments | Names of the environment folders, also used as the folders' display names. | `list(string)` | ```[ "development", "certification", "production", "common" ]``` | no |
+| organization\_id | ID of the organisation, the parent of the folders and the `environment` tag key. | `string` | n/a | yes |
+
+## Outputs
+
+| Name | Description |
+| ---- | ----------- |
+| environment\_tag\_key | ID of the `environment` tag key (`tagKeys/<id>`). |
+| environment\_tag\_key\_namespaced\_name | Namespaced name of the `environment` tag key (`<organization_id>/environment`), e.g. for `resource.matchTag()` in IAM conditions. |
+| environment\_tag\_values | IDs of the `environment` tag values (`tagValues/<id>`), by folder name. |
+| folders | Resource names of the folders (`folders/<id>`), by folder name. |
+<!-- markdownlint-restore -->
+<!-- END_TF_DOCS -->
 
 ## Releases
 
@@ -37,6 +61,7 @@ The repository uses [devenv](https://devenv.sh) with the shared [devenvbase](htt
 
 * `devenv shell` starts the shell.
 * `devenv test` runs the git hooks and tests.
+* `terraform_docs` regenerates the inputs and outputs above, which the `terraform-docs` git hook also does on commit.
 
 The weekly `dcp.sdlc check` workflow opens an issue when a newer dcp.sdlc release is available. Upgrade with `devenv shell -- dcp_sdlc_upgrade_pr`, which also updates
 the devenv inputs, runs the tests and opens a pull request.
