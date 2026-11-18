@@ -1,6 +1,10 @@
 output "folders" {
-  description = "Resource names of the folders (`folders/<id>`), by folder name."
-  value       = { for name, folder in google_folder.environments : name => folder.name }
+  description = "The folders by folder name: `id`, the resource name (`folders/<id>`); `short_name`, the environment's short name, null for `legacy`; `common`, whether it is the common environment."
+  value = { for name, folder in google_folder.environments : name => {
+    id         = folder.name
+    short_name = lookup(local.all_environments, name, null)
+    common     = contains(keys(var.common_environment), name)
+  } }
 }
 
 output "environment_tag_key" {

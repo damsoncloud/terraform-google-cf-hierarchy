@@ -29,8 +29,9 @@ See [`examples/basic`](examples/basic) for a complete example.
 
 | Name | Description | Type | Default | Required |
 | ---- | ----------- | ---- | ------- | :------: |
+| common\_environment | Short name of the common environment, by folder name, e.g. holding the foundations' projects. | `map(string)` | ```{ "common": "cmn" }``` | no |
 | create\_legacy\_folder | Whether to create the `legacy` folder, holding the organisation's existing projects and folders. | `bool` | `true` | no |
-| environments | Names of the environment folders, also used as the folders' display names. | `list(string)` | ```[ "development", "certification", "production", "common" ]``` | no |
+| environments | Short names of the environments other than the common one, by folder name. The names are also the folders' display names; the short names are returned with the folders, e.g. for the names of the environments' groups and resources. | `map(string)` | ```{ "certification": "cert", "development": "dev", "production": "prod" }``` | no |
 | organization\_id | ID of the organisation, the parent of the folders and the `environment` tag key. | `string` | n/a | yes |
 
 ## Outputs
@@ -40,7 +41,7 @@ See [`examples/basic`](examples/basic) for a complete example.
 | environment\_tag\_key | ID of the `environment` tag key (`tagKeys/<id>`). |
 | environment\_tag\_key\_namespaced\_name | Namespaced name of the `environment` tag key (`<organization_id>/environment`), e.g. for `resource.matchTag()` in IAM conditions. |
 | environment\_tag\_values | IDs of the `environment` tag values (`tagValues/<id>`), by folder name. |
-| folders | Resource names of the folders (`folders/<id>`), by folder name. |
+| folders | The folders by folder name: `id`, the resource name (`folders/<id>`); `short_name`, the environment's short name, null for `legacy`; `common`, whether it is the common environment. |
 <!-- markdownlint-restore -->
 <!-- END_TF_DOCS -->
 

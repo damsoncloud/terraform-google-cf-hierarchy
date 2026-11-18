@@ -83,12 +83,18 @@ run "custom_environments" {
   command = plan
 
   variables {
-    environments = ["dev", "prod"]
+    environments = {
+      dev  = "dev"
+      prod = "prod"
+    }
+    common_environment = {
+      shared = "shr"
+    }
   }
 
   assert {
-    condition     = keys(google_folder.environments) == ["dev", "legacy", "prod"]
-    error_message = "Only the given environments and the legacy folder must be created."
+    condition     = keys(google_folder.environments) == ["dev", "legacy", "prod", "shared"]
+    error_message = "Only the given environments, the common environment and the legacy folder must be created."
   }
 }
 
@@ -106,8 +112,15 @@ run "bindings_and_outputs" {
   }
 
   assert {
-    condition     = output.folders == { for name in keys(google_folder.environments) : name => "folders/111111111111" }
-    error_message = "The folders output must map each folder name to its resource name."
+    # Compared as JSON, as the expected object's null short name has no type
+    condition = jsonencode(output.folders) == jsonencode({
+      development   = { id = "folders/111111111111", short_name = "dev", common = false }
+      certification = { id = "folders/111111111111", short_name = "cert", common = false }
+      production    = { id = "folders/111111111111", short_name = "prod", common = false }
+      common        = { id = "folders/111111111111", short_name = "cmn", common = true }
+      legacy        = { id = "folders/111111111111", short_name = null, common = false }
+    })
+    error_message = "The folders output must return each folder's resource name, short name and whether it is the common environment."
   }
 
   assert {
@@ -131,21 +144,25 @@ run "invalid_organization_id" {
   expect_failures = [var.organization_id]
 }
 
-run "duplicate_environments" {
+run "invalid_environment_name" {
   command = plan
 
   variables {
-    environments = ["dev", "dev"]
+    environments = {
+      Production = "prod"
+    }
   }
 
   expect_failures = [var.environments]
 }
 
-run "invalid_environment_name" {
+run "invalid_short_name" {
   command = plan
 
   variables {
-    environments = ["Production"]
+    environments = {
+      production = "p"
+    }
   }
 
   expect_failures = [var.environments]
@@ -155,8 +172,76 @@ run "legacy_as_environment" {
   command = plan
 
   variables {
-    environments = ["dev", "legacy"]
+    environments = {
+      legacy = "leg"
+    }
   }
 
   expect_failures = [var.environments]
+}
+
+run "several_common_environments" {
+  command = plan
+
+  variables {
+    environments = {
+      development = "dev"
+    }
+    common_environment = {
+      common = "cmn"
+      shared = "shr"
+    }
+  }
+
+  expect_failures = [var.common_environment]
+}
+
+run "invalid_common_short_name" {
+  command = plan
+
+  variables {
+    common_environment = {
+      common = "c"
+    }
+  }
+
+  expect_failures = [var.common_environment]
+}
+
+run "legacy_as_common_environment" {
+  command = plan
+
+  variables {
+    common_environment = {
+      legacy = "leg"
+    }
+  }
+
+  expect_failures = [var.common_environment]
+}
+
+run "common_environment_in_environments" {
+  command = plan
+
+  variables {
+    environments = {
+      development = "dev"
+      common      = "cmn"
+    }
+  }
+
+  expect_failures = [var.common_environment]
+}
+
+run "duplicate_short_names" {
+  command = plan
+
+  variables {
+    environments = {
+      development = "dev"
+      demo        = "cmn"
+    }
+  }
+
+  expect_failures = [var.common_environment]
 }

@@ -1,4 +1,4 @@
 output "folders" {
-  description = "Resource names of the folders, by folder name."
+  description = "The folders with their resource names and short names, by folder name."
   value       = module.hierarchy.folders
 }
