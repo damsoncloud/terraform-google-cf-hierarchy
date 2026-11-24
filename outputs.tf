@@ -1,5 +1,10 @@
 output "folders" {
-  description = "The folders by folder name: `id`, the resource name (`folders/<id>`); `short_name`, the environment's short name, null for `legacy`; `common`, whether it is the common environment."
+  description = <<-EOT
+  The folders by folder name:
+    `id`, the resource name (`folders/<id>`);
+    `short_name`, the environment's short name, null for `legacy`;
+    `common`, whether it is the common environment.
+  EOT
   value = { for name, folder in google_folder.environments : name => {
     id         = folder.name
     short_name = lookup(local.all_environments, name, null)

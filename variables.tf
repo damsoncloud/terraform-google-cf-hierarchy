@@ -9,7 +9,10 @@ variable "organization_id" {
 }
 
 variable "environments" {
-  description = "Short names of the environments other than the common one, by folder name. The names are also the folders' display names; the short names are returned with the folders, e.g. for the names of the environments' groups and resources."
+  description = <<-EOT
+  Short names of the environments other than the common one, by folder name.
+  The names are also the folders' display names; the short names are returned with the folders, e.g. for the names of the environments' groups and resources.
+  EOT
   type        = map(string)
   default = {
     development   = "dev"

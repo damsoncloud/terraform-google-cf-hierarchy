@@ -41,7 +41,7 @@ See [`examples/basic`](examples/basic) for a complete example.
 | environment\_tag\_key | ID of the `environment` tag key (`tagKeys/<id>`). |
 | environment\_tag\_key\_namespaced\_name | Namespaced name of the `environment` tag key (`<organization_id>/environment`), e.g. for `resource.matchTag()` in IAM conditions. |
 | environment\_tag\_values | IDs of the `environment` tag values (`tagValues/<id>`), by folder name. |
-| folders | The folders by folder name: `id`, the resource name (`folders/<id>`); `short_name`, the environment's short name, null for `legacy`; `common`, whether it is the common environment. |
+| folders | The folders by folder name:   `id`, the resource name (`folders/<id>`);   `short_name`, the environment's short name, null for `legacy`;   `common`, whether it is the common environment. |
 <!-- markdownlint-restore -->
 <!-- END_TF_DOCS -->
 
